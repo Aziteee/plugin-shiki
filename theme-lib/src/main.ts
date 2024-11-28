@@ -1,11 +1,17 @@
-import { codeToHtml } from "shiki/bundle/full";
+import { BundledLanguage, BundledTheme, createHighlighter, Highlighter } from "shiki/bundle/full";
 import * as transformers from "@shikijs/transformers";
+import { Tab } from "./type";
+import { CodeTabs } from "./components/CodeTabs";
+
+import "./components/CodeTabs"
 
 declare global {
   interface Window {
     shikiConfig: {
-      themeLight: string;
-      themeDark: string;
+      themeLight: BundledTheme;
+      themeDark: BundledTheme;
+      duration: number;
+      stagger: number;
     };
   }
 }
@@ -20,22 +26,25 @@ function processCodes(input: string) {
   const codes = isUseTransformer ? input : lines.slice(1).join('\n');
 
   return {
-      isUseTransformer,
-      codes,
+    isUseTransformer,
+    codes,
   };
 }
 
-function highlightAllCodeBlock() {
-  const codeElements = document.querySelectorAll("pre>code");
+async function highlightAllCodeBlock(highlighter: Highlighter) {
+  const codeElements = document.querySelectorAll("pre>code[class*=language-],pre>code[class*=lang-]");
 
-  codeElements.forEach((codeblock) => {
+  for (let i = 0; i < codeElements.length; i++) {
+    const codeblock = codeElements[i];
     const lang = extractLanguageFromCodeElement(codeblock) || "text";
     const themeLight = window.shikiConfig.themeLight;
     const themeDark = window.shikiConfig.themeDark;
 
     const { isUseTransformer, codes } = processCodes(codeblock.textContent || "");
 
-    codeToHtml(codes || "", {
+    await highlighter.loadLanguage(lang as BundledLanguage);
+
+    codeblock.parentElement!.outerHTML = highlighter.codeToHtml(codes || "", {
       lang,
       themes: {
         light: themeLight,
@@ -43,18 +52,16 @@ function highlightAllCodeBlock() {
       },
       transformers: isUseTransformer
         ? [
-            transformers.transformerNotationDiff(),
-            transformers.transformerNotationHighlight(),
-            transformers.transformerNotationWordHighlight(),
-            transformers.transformerNotationFocus(),
-            transformers.transformerNotationErrorLevel(),
-            transformers.transformerRenderWhitespace(),
-          ]
+          transformers.transformerNotationDiff(),
+          transformers.transformerNotationHighlight(),
+          transformers.transformerNotationWordHighlight(),
+          transformers.transformerNotationFocus(),
+          transformers.transformerNotationErrorLevel(),
+          transformers.transformerRenderWhitespace(),
+        ]
         : [],
-    }).then((html) => {
-      codeblock.parentElement!.outerHTML = html;
     });
-  });
+  }
 }
 
 function extractLanguageFromCodeElement(codeElement: Element) {
@@ -72,6 +79,48 @@ function extractLanguageFromCodeElement(codeElement: Element) {
   return null;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  highlightAllCodeBlock();
+async function initTabs(highlighter: Highlighter) {
+  const columns = document.querySelectorAll('.columns[cols]');
+  columns.forEach((column) => {
+    const extractedTabs: Tab[] = [];
+
+    const innerColumns = column.querySelectorAll('.column[index]');
+
+    innerColumns.forEach(innerColumn => {
+      const codeBlock = innerColumn.querySelector('pre>code');
+      if (!codeBlock) return;
+
+      const codeLines = (codeBlock.textContent ?? "").split('\n');
+
+      const firstLine = codeLines[0].trim();
+      const match = firstLine.match(/\[!code tab:(.*?)\]/);
+
+      if (match) {
+        const title = match[1];
+
+        const code = codeLines.slice(1).join('\n').trim();
+
+        const language = (extractLanguageFromCodeElement(codeBlock) ?? "typescript") as BundledLanguage;
+
+        extractedTabs.push({ title, code, language });
+      }
+    });
+
+    const codeTabsEl = document.createElement('code-tabs') as CodeTabs
+    codeTabsEl.highlighter = highlighter;
+    codeTabsEl.tabs = extractedTabs;
+
+    column.replaceWith(codeTabsEl);
+  })
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const themeLight = window.shikiConfig.themeLight;
+  const themeDark = window.shikiConfig.themeDark;
+  const highlighter = await createHighlighter({
+    themes: [themeDark, themeLight],
+    langs: []
+  })
+  await initTabs(highlighter);
+  await highlightAllCodeBlock(highlighter);
 });

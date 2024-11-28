@@ -30,6 +30,9 @@ importers:
       '@shikijs/transformers':
         specifier: ^1.16.1
         version: 1.16.1
+      shiki-magic-move:
+        specifier: ^0.5.0
+        version: 0.5.0(shiki@1.16.1)(vue@3.5.0)
     devDependencies:
       '@types/node':
         specifier: '20'
@@ -1217,6 +1220,9 @@ packages:
   detect-node@2.1.0:
     resolution: {integrity: sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==}
 
+  diff-match-patch-es@0.1.1:
+    resolution: {integrity: sha512-+wE0HYKRuRdfsnpEFh41kTd0GlYFSDQacz2bQ4dwMDvYGtofqtYdJ6Gl4ZOgUPqPi7v8LSqMY0+/OedmIPHBZw==}
+
   dns-packet@5.6.1:
     resolution: {integrity: sha512-l4gcSouhcgIKRvyy99RNVOgxXiicE+2jZoNmaNmZ6JXiGajBOJAesk1OBlJuM5k2c+eudGdLxDqXuPCKIj6kpw==}
     engines: {node: '>=6'}
@@ -1835,6 +1841,9 @@ packages:
   obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
 
+  ohash@1.1.4:
+    resolution: {integrity: sha512-FlDryZAahJmEF3VR3w1KogSEdWX3WhA5GPakFx4J81kEAiHyLMpdLLElS8n8dfNadMgAne/MywcvmogzscVt4g==}
+
   on-finished@2.4.1:
     resolution: {integrity: sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==}
     engines: {node: '>= 0.8'}
@@ -2166,6 +2175,26 @@ packages:
 
   shell-quote@1.8.1:
     resolution: {integrity: sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA==}
+
+  shiki-magic-move@0.5.0:
+    resolution: {integrity: sha512-tJXGfozg9wus0E4sa2zX+xp8TY9SrrHBF0tjVGBDJDXh7Fbj/4IBe1173qu3wRHs2Y8TkfQnnqStVJGG3ZMIXA==}
+    peerDependencies:
+      react: ^18.2.0
+      shiki: ^1.1.6
+      solid-js: ^1.9.1
+      svelte: 5.0.0-next.107
+      vue: ^3.4.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      shiki:
+        optional: true
+      solid-js:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
 
   shiki@1.16.1:
     resolution: {integrity: sha512-tCJIMaxDVB1mEIJ5TvfZU7kCPB5eo9fli5+21Olc/bmyv+w8kye3JOp+LZRmGkAyT71hrkefQhTiY+o9mBikRQ==}
@@ -3343,6 +3372,13 @@ snapshots:
       '@vue/shared': 3.5.0
       vue: 3.5.0(typescript@5.5.4)
 
+  '@vue/server-renderer@3.5.0(vue@3.5.0)':
+    dependencies:
+      '@vue/compiler-ssr': 3.5.0
+      '@vue/shared': 3.5.0
+      vue: 3.5.0
+    optional: true
+
   '@vue/shared@3.5.0': {}
 
   '@webassemblyjs/ast@1.12.1':
@@ -3718,6 +3754,8 @@ snapshots:
   destroy@1.2.0: {}
 
   detect-node@2.1.0: {}
+
+  diff-match-patch-es@0.1.1: {}
 
   dns-packet@5.6.1:
     dependencies:
@@ -4363,6 +4401,8 @@ snapshots:
 
   obuf@1.1.2: {}
 
+  ohash@1.1.4: {}
+
   on-finished@2.4.1:
     dependencies:
       ee-first: 1.1.1
@@ -4772,6 +4812,14 @@ snapshots:
 
   shell-quote@1.8.1: {}
 
+  shiki-magic-move@0.5.0(shiki@1.16.1)(vue@3.5.0):
+    dependencies:
+      diff-match-patch-es: 0.1.1
+      ohash: 1.1.4
+    optionalDependencies:
+      shiki: 1.16.1
+      vue: 3.5.0
+
   shiki@1.16.1:
     dependencies:
       '@shikijs/core': 1.16.1
@@ -4988,6 +5036,15 @@ snapshots:
     dependencies:
       '@vue/devtools-api': 6.6.3
       vue: 3.5.0(typescript@5.5.4)
+
+  vue@3.5.0:
+    dependencies:
+      '@vue/compiler-dom': 3.5.0
+      '@vue/compiler-sfc': 3.5.0
+      '@vue/runtime-dom': 3.5.0
+      '@vue/server-renderer': 3.5.0(vue@3.5.0)
+      '@vue/shared': 3.5.0
+    optional: true
 
   vue@3.5.0(typescript@5.5.4):
     dependencies:

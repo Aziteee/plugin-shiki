@@ -36,12 +36,14 @@ public class ShikiHeadProcessor implements TemplateHeadProcessor {
                     model.add(
                             modelFactory.createText(
                                     commentWidgetScript(customSetting.themeLight(), customSetting.themeDark(),
-                                            customSetting.useBuiltinStyle())));
+                                            customSetting.useBuiltinStyle(), customSetting.duration(),
+                                            customSetting.stagger())));
                 })
                 .then();
     }
 
-    private String commentWidgetScript(String themeLight, String themeDark, boolean useBuiltinStyle) {
+    private String commentWidgetScript(String themeLight, String themeDark, boolean useBuiltinStyle, int duration,
+            int stagger) {
 
         final Properties properties = new Properties();
         final String version = pluginContext.getVersion();
@@ -53,6 +55,8 @@ public class ShikiHeadProcessor implements TemplateHeadProcessor {
                         ? "<link rel=\"stylesheet\" href=\"/plugins/shiki/assets/static/style.css?version=" + version
                                 + "\" />"
                         : "");
+        properties.setProperty("duration", String.valueOf(duration));
+        properties.setProperty("stagger", String.valueOf(stagger));
 
         return PROPERTY_PLACEHOLDER_HELPER.replacePlaceholders("""
                 <!-- plugin-shiki start -->
@@ -60,15 +64,18 @@ public class ShikiHeadProcessor implements TemplateHeadProcessor {
                 <script src="/plugins/shiki/assets/static/main.js?version=${version}" defer></script>
                 <script>
                     window.shikiConfig = {
-                        themeLight: "${themeLight}" === "null" ? "github-light" : "${themeLight}",
-                        themeDark: "${themeDark}" === "null" ? "github-dark" : "${themeDark}",
+                        themeLight: "${themeLight}",
+                        themeDark: "${themeDark}",
+                        duration: ${duration},
+                        stagger: ${stagger}
                     };
                 </script>
                 <!-- plugin-shiki end -->
                 """, properties);
     }
 
-    public record CustomSetting(String themeLight, String themeDark, boolean useBuiltinStyle) {
+    public record CustomSetting(String themeLight, String themeDark, boolean useBuiltinStyle, int duration,
+            int stagger) {
         public static final String GROUP = "config";
     }
 }
